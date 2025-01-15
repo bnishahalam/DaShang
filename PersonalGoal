@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BNI Goal Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        input:invalid {
+            border-color: red;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+            border-radius: 4px;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>BNI Goal Calculator</h1>
+    <div id="calculator">
+        <div class="form-group">
+            <label for="annual-revenue">1. Total Annual Business Revenue Goal (e.g., 100,000):</label>
+            <input type="number" id="annual-revenue" placeholder="Enter annual revenue goal" required>
+        </div>
+        <div class="form-group">
+            <label for="bni-percentage">2. Percentage of Income from BNI (e.g., 20):</label>
+            <input type="number" id="bni-percentage" placeholder="Enter percentage" required>
+        </div>
+        <div class="form-group">
+            <label for="avg-sale-price">4. Average Sale Price (e.g., 1,000):</label>
+            <input type="number" id="avg-sale-price" placeholder="Enter average sale price" required>
+        </div>
+        <div class="form-group">
+            <label for="close-ratio">6. Referral Close Ratio (e.g., 50):</label>
+            <input type="number" id="close-ratio" placeholder="Enter close ratio" required>
+        </div>
+        <button onclick="calculateGoals()">Calculate</button>
+        <div class="error" id="error-message"></div>
+        <div class="result" id="results"></div>
+    </div>
+
+    <script>
+        function calculateGoals() {
+            // Get input values
+            const annualRevenue = document.getElementById('annual-revenue').value;
+            const bniPercentage = document.getElementById('bni-percentage').value;
+            const avgSalePrice = document.getElementById('avg-sale-price').value;
+            const closeRatio = document.getElementById('close-ratio').value;
+
+            // Clear previous error message and results
+            document.getElementById('error-message').textContent = '';
+            document.getElementById('results').innerHTML = '';
+
+            // Validate inputs
+            if (!annualRevenue || !bniPercentage || !avgSalePrice || !closeRatio) {
+                document.getElementById('error-message').textContent = 'Please fill out all fields.';
+                return;
+            }
+
+            // Parse input values
+            const revenue = parseFloat(annualRevenue);
+            const percentage = parseFloat(bniPercentage) / 100;
+            const salePrice = parseFloat(avgSalePrice);
+            const ratio = parseFloat(closeRatio) / 100;
+
+            // Calculate values
+            const personalRevenueGoal = revenue * percentage;
+            const closedReferralsNeeded = Math.ceil(personalRevenueGoal / salePrice);
+            const bniReferralsNeeded = Math.ceil(closedReferralsNeeded / ratio);
+            const monthlyReferralsNeeded = Math.ceil(bniReferralsNeeded / 12);
+
+            // Format numbers with commas
+            const formatNumber = (num) => num.toLocaleString();
+
+            // Display results
+            document.getElementById('results').innerHTML = `
+                <p><strong>Personal Revenue Goal:</strong> RM ${formatNumber(personalRevenueGoal.toFixed(2))}</p>
+                <p><strong>Closed Referrals Needed:</strong> ${formatNumber(closedReferralsNeeded)}</p>
+                <p><strong>Estimated BNI Referrals Needed:</strong> ${formatNumber(bniReferralsNeeded)}</p>
+                <p><strong>Monthly BNI Referrals Needed:</strong> ${formatNumber(monthlyReferralsNeeded)}</p>
+            `;
+        }
+    </script>
+</body>
+</html>
